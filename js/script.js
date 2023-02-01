@@ -18,7 +18,7 @@ function titleClickHandler(event){
     
   const activeArticles = document.querySelectorAll('.list titles');
     
-  for(let aactiveArticle of activeArticles){
+  for(let activeArticle of activeArticles){
     activeArticle.classList.remove('.list titles');
     }
 
