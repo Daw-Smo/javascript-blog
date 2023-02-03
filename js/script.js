@@ -16,10 +16,10 @@ function titleClickHandler(event){
 
   /* remove class 'active' from all articles */
     
-  const activeArticles = document.querySelectorAll('.list titles');
+  const activeArticles = document.querySelectorAll('.posts article.active');
     
   for(let activeArticle of activeArticles){
-    activeArticle.classList.remove('.list titles');
+    activeArticle.classList.remove('active');
     }
 
   /* get 'href' attribute from the clicked link */
