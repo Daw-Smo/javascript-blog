@@ -68,8 +68,8 @@ function generateTitleLinks() {
 
         /* get the article id */
 
-        const articleID = article.getAttribute('id');
-        console.log(articleID)
+        const articleId = article.getAttribute('id');
+        console.log(articleId)
 
         /* find the title element */
 
@@ -83,6 +83,7 @@ function generateTitleLinks() {
 
         const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
         console.log(linkHTML)
+
         /* insert link into titleList */
 
         html = html + linkHTML;
