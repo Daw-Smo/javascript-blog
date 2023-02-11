@@ -300,6 +300,41 @@ function calculateTagsParams(tags) {
 
 const optTagsListSelector = '.tags .list';
 
+function calculateTagsParams(tags) {
+  let params = {
+    max: 0,
+    min: 999999
+  };
+
+  for (let tag in tags) {
+    console.log(tag + ' is used ' + tags[tag] + ' times');
+    if (tags[tag] > params.max) {
+      params.max = tags[tag];
+    }
+    if (tags[tag] < params.min) {
+      params.min = tags[tag];
+    }
+  }
+
+  return params;
+}
+
+function calculateTagClass(count, params) {
+  let classNumber = 0;
+  if (count <= 1) {
+    classNumber = 1;
+  } else if (count <= 2) {
+    classNumber = 2;
+  } else if (count <= 3) {
+    classNumber = 3;
+  } else if (count <= 4) {
+    classNumber = 4;
+  } else if (count >= optCloudClassCount) {
+    classNumber = 5;
+  }
+  return optCloudClassPrefix + classNumber;
+}
+
 function generateTags() {
   /* [NEW] create a new variable allTags with an empty object */
   let allTags = {};
@@ -365,24 +400,7 @@ function generateTags() {
   const tagList = document.querySelector(optTagsListSelector);
 
   /* [NEW] create variable for all links HTML code */
-  function calculateTagsParams(tags) {
-    let params = {
-      max: 0,
-      min: 999999
-    };
 
-    for (let tag in tags) {
-      console.log(tag + ' is used ' + tags[tag] + ' times');
-      if (tags[tag] > params.max) {
-        params.max = tags[tag];
-      }
-      if (tags[tag] < params.min) {
-        params.min = tags[tag];
-      }
-    }
-
-    return params;
-  }
   const tagsParams = calculateTagsParams(allTags);
   console.log('tagsParams:', tagsParams);
   let allTagsHTML = '';
