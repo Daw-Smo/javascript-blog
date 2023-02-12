@@ -45,9 +45,11 @@ function titleClickHandler(event) {
 const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
-  optArticleTagsSelector = '.post-tags .list';
-coptCloudClassCount = 5;
-optCloudClassPrefix = "tag-size-";
+  optArticleTagsSelector = '.post-tags .list',
+  optCloudClassCount = 5,
+  optCloudClassPrefix = "tag-size-",
+  optTagsListSelector = '.tags.list',
+  optAuthorsListSelector = '.authors.list';
 
 function generateTitleLinks(customSelector = '') {
 
@@ -107,61 +109,6 @@ for (let link of links) {
   link.addEventListener('click', titleClickHandler);
 }
 
-function generateTags() {
-  /* find all articles */
-
-  const articles = document.querySelectorAll('.post');
-  console.log(`Articles:`, articles);
-
-  /* START LOOP: for every article: */
-
-  for (let article of articles) {
-
-    /* find tags wrapper */
-
-    const tagsWrapper = article.querySelector('.post-tags .list');
-    console.log(`Tags wrapper:`, tagsWrapper);
-
-    /* make html variable with empty string */
-
-    let html = '';
-
-    /* get tags from data-tags attribute */
-
-    const articleTags = article.getAttribute('data-tags');
-    console.log(`Data tags:`, articleTags);
-
-    /* split tags into array */
-
-    const articleTagsArray = articleTags.split(' ');
-    console.log(`Tags array:`, articleTagsArray);
-
-    /* START LOOP: for each tag */
-
-    for (let tag of articleTagsArray) {
-
-      /* generate HTML of the link */
-
-      const linkHTML = '<li><a href="#tag-' + tag + '">' + tag + '</a></li> ';
-      console.log(`Link HTML:`, linkHTML);
-
-      /* add generated code to html variable */
-
-      html = html + linkHTML;
-
-      /* END LOOP: for each tag */
-
-    }
-    console.log(`HTML:`, html);
-
-    /* insert HTML of all the links into the tags wrapper */
-
-    tagsWrapper.innerHTML = html;
-  }
-
-  /* END LOOP: for every article: */
-}
-
 generateTags();
 
 function tagClickHandler(event) {
@@ -213,21 +160,44 @@ function addClickListenersToTags() {
 
 addClickListenersToTags();
 
-const optArticleAuthorSelector = '.post-author [data-author]';
+const optArticleAuthorSelector = '.post-author';
 
 function generateAuthors() {
-  // Select all articles
-  const articles = document.querySelectorAll(optArticleAuthorSelector);
-  // Loop through each article
-  for (let article of articles) {
-    // Get the author name from data-author attribute of the article
-    const author = article.getAttribute('data-author');
-    // Select the author link within the post-author wrapper
-    const authorLink = article.querySelector('.post-author a');
-    // Add click event listener to the author link
-    authorLink.addEventListener('click', authorClickHandler);
+  /* [NEW] create a new variable allAuthors with an empty object */
+  let allAuthors = {};
+
+  /* find all articles */
+  const articles = document.querySelectorAll('.post');
+  console.log('Articles:', articles);
+
+  /* get author from post-author attribute */
+  const articleAuthor = article.querySelector('.post-author');
+  console.log('Post author:', articleAuthor);
+
+  /* [NEW] check if this author is NOT already in allAuthors */
+  if (!allAuthors.hasOwnProperty(articleAuthor)) {
+    /* [NEW] add author to allAuthors object */
+    allAuthors[articleAuthor] = 1;
+  } else {
+    allAuthors[articleAuthor]++;
   }
-  console.log('Authors generated successfully.');
+
+  /* find authors wrapper */
+  const authorsWrapper = document.querySelector(optAuthorsListSelector);
+  console.log('Authors wrapper:', authorsWrapper);
+
+  /* make html variable with empty string */
+  let html = '';
+
+  /* generate HTML of the link */
+  const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + '<span class="author-name">' + articleAuthor + '</span>' + '</a></li> ';
+
+  /* add generated code to html variable */
+  html = html + linkHTML;
+
+  /* insert HTML of the link into the authors wrapper */
+  authorsWrapper.innerHTML = html;
+  console.log(html);
 }
 
 function addClickListenersToAuthors() {
@@ -281,26 +251,6 @@ generateAuthors();
 addClickListenersToAuthors();
 
 function calculateTagsParams(tags) {
-  const params = {
-    max: 0,
-    min: 999999
-  };
-
-  for (let tag in tags) {
-    if (tags[tag] > params.max) {
-      params.max = tags[tag];
-    }
-    if (tags[tag] < params.min) {
-      params.min = tags[tag];
-    }
-  }
-
-  return params;
-}
-
-const optTagsListSelector = '.tags .list';
-
-function calculateTagsParams(tags) {
   let params = {
     max: 0,
     min: 999999
@@ -321,17 +271,7 @@ function calculateTagsParams(tags) {
 
 function calculateTagClass(count, params) {
   let classNumber = 0;
-  if (count <= 1) {
-    classNumber = 1;
-  } else if (count <= 2) {
-    classNumber = 2;
-  } else if (count <= 3) {
-    classNumber = 3;
-  } else if (count <= 4) {
-    classNumber = 4;
-  } else if (count >= optCloudClassCount) {
-    classNumber = 5;
-  }
+  classNumber = Math.floor(((count - params.min) / (params.max - params.min)) * optCloudClassCount + 1);
   return optCloudClassPrefix + classNumber;
 }
 
@@ -372,7 +312,7 @@ function generateTags() {
 
       /* generate HTML of the link */
 
-      const linkHTML = '<li><a href="#tag-' + tag + '">' + tag + '</a></li>';
+      const linkHTML = '<li><a href="#tag-' + tag + '">' + tag + '</a></li> ';
 
       /* add generated code to html variable */
 
@@ -408,7 +348,9 @@ function generateTags() {
   /* [NEW] START LOOP: for each tag in allTags: */
   for (let tag in allTags) {
     /* [NEW] generate code of a link and add it to allTagsHTML */
-    const tagLinkHTML = '<li>' + calculateTagClass(allTags[tag], tagsParams) + '</li>';
+    const tagLinkHTML =
+      '<li><a href="#tag' + tag + '"class="' + calculateTagClass(allTags[tag], tagsParams) + '">' + tag + '</a> <span>(' + allTags[tag] + ')</span></li> ';
+    /*const tagLinkHTML =  <li><a href='#tag-' + tag + '">' + tag "class="' + calculateTagClass(allTags[tag], tagsParams)  + '"> + tag + '</a> <span>(</span></li> */
     console.log('tagLinkHTML:', tagLinkHTML);
     allTagsHTML += tagLinkHTML;
   }
