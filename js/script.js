@@ -181,7 +181,7 @@ function generateAuthors() {
     let html = '';
 
     /* get author from post-author attribute */
-    const articleAuthor = article.querySelector('.post-author').innerHTML;
+    const articleAuthor = article.querySelector('.post-author');
     console.log(`Author:`, articleAuthor);
 
     /* generate HTML of the link */
