@@ -174,14 +174,14 @@ function generateAuthors() {
   for (let article of articles) {
 
     /* find author wrapper */
-    const authorWrapper = article.querySelector('.post-author .list');
+    const authorWrapper = article.querySelector('.post-author');
     console.log(`Author wrapper:`, authorWrapper);
 
     /* make html variable with empty string */
     let html = '';
 
     /* get author from post-author attribute */
-    const articleAuthor = article.querySelector('.post-author');
+    const articleAuthor = article.querySelector('.post-author').innerHTML;
     console.log(`Author:`, articleAuthor);
 
     /* generate HTML of the link */
@@ -200,6 +200,7 @@ function generateAuthors() {
 
     /* insert HTML of the link into the author wrapper */
     authorWrapper.innerHTML = html;
+    console.log(authorWrapper);
   }
   /* END LOOP: for every article: */
 
