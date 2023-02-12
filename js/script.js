@@ -168,36 +168,59 @@ function generateAuthors() {
 
   /* find all articles */
   const articles = document.querySelectorAll('.post');
-  console.log('Articles:', articles);
+  console.log(`Articles:`, articles);
 
-  /* get author from post-author attribute */
-  const articleAuthor = article.querySelector('.post-author');
-  console.log('Post author:', articleAuthor);
+  /* START LOOP: for every article: */
+  for (let article of articles) {
 
-  /* [NEW] check if this author is NOT already in allAuthors */
-  if (!allAuthors.hasOwnProperty(articleAuthor)) {
-    /* [NEW] add author to allAuthors object */
-    allAuthors[articleAuthor] = 1;
-  } else {
-    allAuthors[articleAuthor]++;
+    /* find author wrapper */
+    const authorWrapper = article.querySelector('.post-author .list');
+    console.log(`Author wrapper:`, authorWrapper);
+
+    /* make html variable with empty string */
+    let html = '';
+
+    /* get author from post-author attribute */
+    const articleAuthor = article.querySelector('.post-author').innerHTML;
+    console.log(`Author:`, articleAuthor);
+
+    /* generate HTML of the link */
+    const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + articleAuthor + '</a></li> ';
+
+    /* add generated code to html variable */
+    html = html + linkHTML;
+
+    /* [NEW] check if this link is NOT already in allAuthors */
+    if (!allAuthors.hasOwnProperty(articleAuthor)) {
+      /* [NEW] add author to allAuthors object */
+      allAuthors[articleAuthor] = 1;
+    } else {
+      allAuthors[articleAuthor]++;
+    }
+
+    /* insert HTML of the link into the author wrapper */
+    authorWrapper.innerHTML = html;
   }
+  /* END LOOP: for every article: */
 
-  /* find authors wrapper */
-  const authorsWrapper = document.querySelector(optAuthorsListSelector);
-  console.log('Authors wrapper:', authorsWrapper);
+  /* [NEW] find list of authors in right column */
+  const authorList = document.querySelector(optAuthorsListSelector);
 
-  /* make html variable with empty string */
-  let html = '';
+  /* [NEW] create variable for all links HTML code */
+  let allAuthorsHTML = '';
 
-  /* generate HTML of the link */
-  const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + '<span class="author-name">' + articleAuthor + '</span>' + '</a></li> ';
+  /* [NEW] START LOOP: for each author in allAuthors: */
+  for (let author in allAuthors) {
+    /* [NEW] generate code of a link and add it to allAuthorsHTML */
+    const authorLinkHTML = '<li><a href="#author-' + author + '">' + author + '</a> <span>(' + allAuthors[author] + ')</span></li> ';
+    console.log(`Author link HTML:`, authorLinkHTML);
+    allAuthorsHTML += authorLinkHTML;
+  }
+  /* [NEW] END LOOP: for each author in allAuthors:  */
 
-  /* add generated code to html variable */
-  html = html + linkHTML;
-
-  /* insert HTML of the link into the authors wrapper */
-  authorsWrapper.innerHTML = html;
-  console.log(html);
+  /* [NEW] add html from allAuthorsHTML to authorList */
+  authorList.innerHTML = allAuthorsHTML;
+  console.log(allAuthorsHTML);
 }
 
 function addClickListenersToAuthors() {
