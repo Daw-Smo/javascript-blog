@@ -1,5 +1,9 @@
 'use strict';
 
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML)
+}
+
 function titleClickHandler(event) {
   event.preventDefault();
   console.log('Link was clicked!');
@@ -81,7 +85,8 @@ function generateTitleLinks(customSelector = '') {
 
     /* create HTML of the link */
 
-    const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+    const linkHTMLData = {id: articleId, title: articleTitle};
+    const linkHTML = templates.articleLink(linkHTMLData);
     console.log(linkHTML);
 
     /* insert link into titleList */
@@ -226,7 +231,7 @@ function generateAuthors() {
 
 function addClickListenersToAuthors() {
   // Select all author links within post-author wrappers
-  const authorLinks = document.querySelectorAll('.post-author a');
+  const authorLinks = document.querySelectorAll("[href^='#author-']");
   // Loop through each author link
   for (let authorLink of authorLinks) {
     // Add click event listener to the author link
@@ -335,8 +340,9 @@ function generateTags() {
     for (let tag of tagsArray) {
 
       /* generate HTML of the link */
-
       const linkHTML = '<li><a href="#tag-' + tag + '">' + tag + '</a></li> ';
+      /*const linkHTMLData = {id: tag, title: tag};
+      const linkHTML = templates.tagLink(linkHTMLData);*/
 
       /* add generated code to html variable */
 
